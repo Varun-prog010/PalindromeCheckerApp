@@ -1,51 +1,46 @@
-/** MAIN CLASS - UseCase7PalindromeCheckerApp
-
- Use Case 7: Deque Based Optimized Palindrome Checker
-
+/**
+ MAIN CLASS - UseCase2PalindromeCheckerApp
+ Use Case 2: Hardcoded Palindrome Validation
  Description:
- This class validates a palindrome using a Deque
- (Double Ended Queue).
- Characters are inserted into the deque and then compared by removing elements from both ends:
- - removeFirst()
- - removeLast()
+ This class demonstrates basic palindrome validation
+ using a hardcoded string value.
 
- This avoids reversing the string and provides an efficient front-to-back comparison approach.
+ At this stage, the application:
+ Stores a predefined string
+ Compares characters from both ends
+ Determines whether the string is a palindrome
+ Displays the result on the console
 
- This use case demonstrates optimal bidirectional traversal using Deque.
- @author Sourav Kumar
- @version 7.0
+ This use case introduces fundamental comparison logic
+ before using advanced data structures.
+
+ * @author Varun Misra
+ * @version 2.0
+
  **/
-
-import java.util.Deque;
-import java.util.LinkedList;
 
 public class PalindromeChecker {
 
     public static boolean isPalindrome(String text) {
-
         // Remove spaces and convert to lowercase
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
 
-        // Use Deque to store characters
-        Deque<Character> deque = new LinkedList<>();
+        int left = 0;
+        int right = cleaned.length() - 1;
 
-        // Insert characters into deque
-        for (char ch : cleaned.toCharArray()) {
-            deque.addLast(ch); // Insert at the rear
-        }
-
-        // Compare front and rear elements until deque is empty or mismatch found
-        while (deque.size() > 1) {
-            if (!deque.removeFirst().equals(deque.removeLast())) {
-                return false; // Mismatch found
+        while (left < right) {
+            if (cleaned.charAt(left) != cleaned.charAt(right)) {
+                return false;
             }
+            left++;
+            right--;
         }
-
-        return true; // All matched
+        return true;
     }
 
     public static void main(String[] args) {
 
+        // Hardcoded string
         String input = "Madam";
 
         boolean result = isPalindrome(input);
