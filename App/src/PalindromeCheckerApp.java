@@ -1,112 +1,105 @@
-/** MAIN CLASS - UseCase10PalindromeCheckerApp
+/** MAIN CLASS - UseCase12PalindromeCheckerApp
 
- Use Case 10: Case-Insensitive & Space-Ignored Palindrome Checker
+ Use Case 12: Strategy Pattern for Palindrome Algorithms (Advanced)
 
  Description:
- This class validates a palindrome while ignoring spaces and case.
- It preprocesses the string using regular expressions and applies
- recursive logic for palindrome validation.
+ This version uses the Strategy Pattern to allow dynamic selection of
+ palindrome checking algorithms at runtime.
+ Different strategies (Stack, Deque, Recursive) can be injected.
 
  Key Concepts:
- - String preprocessing
- - Regular expressions
- - Recursion (or other logic)
- - Case-insensitive comparison
- - Ignoring spaces
+ - Strategy Pattern
+ - Interface-based polymorphism
+ - Encapsulation of algorithm behavior
+ - Dynamic algorithm selection
 
  @author Varun Misra
- @version 10.0
+ @version 12.0
  **/
 
-public class PalindromeChecker {
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Stack;
 
-    // Recursive helper method
-    private static boolean isPalindromeRecursive(String text, int start, int end) {
-        if (start >= end) return true;  // Base case
+// Strategy interface
+interface PalindromeStrategy {
+    boolean check(String text);
+}
+
+// Stack-based implementation
+class StackStrategy implements PalindromeStrategy {
+    @Override
+    public boolean check(String text) {
+        String cleaned = text.replaceAll("\\s+", "").toLowerCase();
+        Stack<Character> stack = new Stack<>();
+        for (char ch : cleaned.toCharArray()) stack.push(ch);
+        for (char ch : cleaned.toCharArray()) {
+            if (stack.pop() != ch) return false;
+        }
+        return true;
+    }
+}
+
+// Deque-based implementation
+class DequeStrategy implements PalindromeStrategy {
+    @Override
+    public boolean check(String text) {
+        String cleaned = text.replaceAll("\\s+", "").toLowerCase();
+        Deque<Character> deque = new LinkedList<>();
+        for (char ch : cleaned.toCharArray()) deque.addLast(ch);
+        while (deque.size() > 1) {
+            if (!deque.removeFirst().equals(deque.removeLast())) return false;
+        }
+        return true;
+    }
+}
+
+// Recursive implementation
+class RecursiveStrategy implements PalindromeStrategy {
+
+    private boolean isPalindromeRecursive(String text, int start, int end) {
+        if (start >= end) return true;
         if (text.charAt(start) != text.charAt(end)) return false;
         return isPalindromeRecursive(text, start + 1, end - 1);
     }
 
-    // Public method for cleaner interface
-    public static boolean isPalindrome(String text) {
-        // Normalize input: remove spaces, convert to lowercase
+    @Override
+    public boolean check(String text) {
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
         return isPalindromeRecursive(cleaned, 0, cleaned.length() - 1);
     }
+}
 
+// Context class
+class PalindromeCheckerClass {
+    private PalindromeStrategy strategy;
+
+    public PalindromeCheckerClass(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setStrategy(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean checkPalindrome(String text) {
+        return strategy.check(text);
+    }
+}
+
+// Demo
+public class PalindromeChecker {
     public static void main(String[] args) {
-
         String input = "A man a plan a canal Panama";
 
-        boolean result = isPalindrome(input);
+        // Choose strategy dynamically
+        PalindromeCheckerClass checker = new PalindromeCheckerClass(new StackStrategy());
+        System.out.println("Using StackStrategy: " + checker.checkPalindrome(input));
 
-        System.out.println("Input text : " + input);
-        System.out.println("Is it Palindrome ? : " + result);
-    }/** MAIN CLASS - UseCase11PalindromeCheckerApp
+        checker.setStrategy(new DequeStrategy());
+        System.out.println("Using DequeStrategy: " + checker.checkPalindrome(input));
 
-     Use Case 11: Object-Oriented Palindrome Checker with Encapsulation
-
-     Description:
-     Encapsulates the palindrome checking logic within a dedicated class.
-     The class exposes a single public method checkPalindrome() for validation.
-     This demonstrates encapsulation and the Single Responsibility Principle.
-
-     Key Concepts:
-     - Encapsulation (private fields, public methods)
-     - Single Responsibility Principle
-     - Internal data structures (Stack / Array)
-     - Reusable and modular code
-
-     @author Varun Misra
-     @version 11.0
-     **/
-
-import java.util.Stack;
-
-    public class PalindromeChecker {
-
-        // Private field to store the text
-        private String text;
-
-        // Constructor
-        public PalindromeChecker(String text) {
-            this.text = text;
-        }
-
-        // Public method to check palindrome
-        public boolean checkPalindrome() {
-            if (text == null || text.isEmpty()) return true;
-
-            // Normalize text: remove spaces and convert to lowercase
-            String cleaned = text.replaceAll("\\s+", "").toLowerCase();
-
-            // Use internal Stack for LIFO comparison
-            Stack<Character> stack = new Stack<>();
-            for (char ch : cleaned.toCharArray()) {
-                stack.push(ch);
-            }
-
-            for (char ch : cleaned.toCharArray()) {
-                if (stack.pop() != ch) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        // Optional: getter for the text
-        public String getText() {
-            return text;
-        }
-
-        public static void main(String[] args) {
-            String input = "A man a plan a canal Panama";
-
-            PalindromeChecker checker = new PalindromeChecker(input);
-            boolean result = checker.checkPalindrome();
-
-            System.out.println("Input text : " + checker.getText());
-            System.out.println("Is it Palindrome ? : " + result);
-        }
+        checker.setStrategy(new RecursiveStrategy());
+        System.out.println("Using RecursiveStrategy: " + checker.checkPalindrome(input));
     }
 }
