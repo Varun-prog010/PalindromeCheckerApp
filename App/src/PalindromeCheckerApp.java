@@ -1,47 +1,103 @@
-/** MAIN CLASS - UseCase7PalindromeCheckerApp
+/** MAIN CLASS - UseCase8PalindromeCheckerApp
 
- Use Case 7: Deque Based Optimized Palindrome Checker
+ Use Case 8: Linked List Based Palindrome Checker
 
  Description:
- This class validates a palindrome using a Deque
- (Double Ended Queue).
- Characters are inserted into the deque and then compared by removing elements from both ends:
+ This class checks whether a string is a palindrome
+ using a LinkedList.
+
+ Characters are added to the list and then compared
+ by removing elements from both ends:
+
  - removeFirst()
  - removeLast()
 
- This avoids reversing the string and provides an efficient front-to-back comparison approach.
+ This demonstrates how LinkedList supports
+ double-ended operations for symmetric validation.
 
- This use case demonstrates optimal bidirectional traversal using Deque.
  @author Varun Misra
- @version 7.0
+ @version 8.0
  **/
-
-import java.util.Deque;
-import java.util.LinkedList;
 
 public class PalindromeChecker {
 
-    public static boolean isPalindrome(String text) {
+    // Node class for singly linked list
+    static class Node {
+        char data;
+        Node next;
 
-        // Remove spaces and convert to lowercase
-        String cleaned = text.replaceAll("\\s+", "").toLowerCase();
-
-        // Use Deque to store characters
-        Deque<Character> deque = new LinkedList<>();
-
-        // Insert characters into deque
-        for (char ch : cleaned.toCharArray()) {
-            deque.addLast(ch); // Insert at the rear
+        Node(char data) {
+            this.data = data;
+            this.next = null;
         }
+    }
 
-        // Compare front and rear elements until deque is empty or mismatch found
-        while (deque.size() > 1) {
-            if (!deque.removeFirst().equals(deque.removeLast())) {
-                return false; // Mismatch found
+    // Convert string to linked list
+    private static Node stringToLinkedList(String text) {
+        Node head = null, tail = null;
+        for (char ch : text.toCharArray()) {
+            Node newNode = new Node(ch);
+            if (head == null) {
+                head = tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
         }
+        return head;
+    }
 
-        return true; // All matched
+    // Reverse a linked list starting from given node
+    private static Node reverseList(Node head) {
+        Node prev = null, current = head;
+        while (current != null) {
+            Node nextNode = current.next;
+            current.next = prev;
+            prev = current;
+            current = nextNode;
+        }
+        return prev;
+    }
+
+    // Check if linked list is palindrome
+    public static boolean isPalindrome(String text) {
+
+        // Clean the input
+        String cleaned = text.replaceAll("\\s+", "").toLowerCase();
+
+        // Edge cases: empty or single character
+        if (cleaned.length() <= 1) return true;
+
+        // Convert to linked list
+        Node head = stringToLinkedList(cleaned);
+
+        // Use fast and slow pointers to find the middle
+        Node slow = head, fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // Reverse the second half
+        Node secondHalf = reverseList(slow.next);
+
+        // Compare first and second halves
+        Node p1 = head;
+        Node p2 = secondHalf;
+        boolean palindrome = true;
+        while (p2 != null) {
+            if (p1.data != p2.data) {
+                palindrome = false;
+                break;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        // Restore the list (optional)
+        slow.next = reverseList(secondHalf);
+
+        return palindrome;
     }
 
     public static void main(String[] args) {
