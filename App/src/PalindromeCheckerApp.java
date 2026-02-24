@@ -1,20 +1,20 @@
-/** MAIN CLASS - UseCase12PalindromeCheckerApp
+/** MAIN CLASS - UseCase13PalindromeCheckerApp
 
- Use Case 12: Strategy Pattern for Palindrome Algorithms (Advanced)
+ Use Case 13: Performance Comparison of Palindrome Algorithms
 
  Description:
- This version uses the Strategy Pattern to allow dynamic selection of
- palindrome checking algorithms at runtime.
- Different strategies (Stack, Deque, Recursive) can be injected.
+ This class compares the execution time of different palindrome checking algorithms
+ (Stack, Deque, Recursive) using System.nanoTime().
+ It demonstrates algorithm performance analysis in Java.
 
  Key Concepts:
- - Strategy Pattern
- - Interface-based polymorphism
- - Encapsulation of algorithm behavior
- - Dynamic algorithm selection
+ - System.nanoTime() for precise timing
+ - Algorithm performance comparison
+ - Strategy pattern for modular algorithms
+ - Case-insensitive & space-ignored checking
 
  @author Varun Misra
- @version 12.0
+ @version 13.0
  **/
 
 import java.util.Deque;
@@ -85,6 +85,14 @@ class PalindromeCheckerClass {
     public boolean checkPalindrome(String text) {
         return strategy.check(text);
     }
+
+    // Method to measure execution time
+    public long measureExecutionTime(String text) {
+        long start = System.nanoTime();
+        checkPalindrome(text);
+        long end = System.nanoTime();
+        return end - start; // nanoseconds
+    }
 }
 
 // Demo
@@ -92,14 +100,19 @@ public class PalindromeChecker {
     public static void main(String[] args) {
         String input = "A man a plan a canal Panama";
 
-        // Choose strategy dynamically
         PalindromeCheckerClass checker = new PalindromeCheckerClass(new StackStrategy());
-        System.out.println("Using StackStrategy: " + checker.checkPalindrome(input));
+        long stackTime = checker.measureExecutionTime(input);
+        System.out.println("StackStrategy result: " + checker.checkPalindrome(input) +
+                " | Execution time: " + stackTime + " ns");
 
         checker.setStrategy(new DequeStrategy());
-        System.out.println("Using DequeStrategy: " + checker.checkPalindrome(input));
+        long dequeTime = checker.measureExecutionTime(input);
+        System.out.println("DequeStrategy result: " + checker.checkPalindrome(input) +
+                " | Execution time: " + dequeTime + " ns");
 
         checker.setStrategy(new RecursiveStrategy());
-        System.out.println("Using RecursiveStrategy: " + checker.checkPalindrome(input));
+        long recursiveTime = checker.measureExecutionTime(input);
+        System.out.println("RecursiveStrategy result: " + checker.checkPalindrome(input) +
+                " | Execution time: " + recursiveTime + " ns");
     }
 }
