@@ -1,42 +1,45 @@
-/** MAIN CLASS - UseCase10PalindromeCheckerApp
+/** MAIN CLASS - UseCase9PalindromeCheckerApp
 
- Use Case 10: Case-Insensitive & Space-Ignored Palindrome Checker
+ Use Case 9: Recursive Palindrome Checker
 
  Description:
- This class validates a palindrome while ignoring spaces and case.
- It preprocesses the string using regular expressions and applies
- recursive logic for palindrome validation.
+ This class validates a palindrome using recursion.
+ It compares the first and last characters recursively until the base condition is reached.
 
  Key Concepts:
- - String preprocessing
- - Regular expressions
- - Recursion (or other logic)
- - Case-insensitive comparison
- - Ignoring spaces
+ - Recursion
+ - Base Condition
+ - Call Stack
+ - Efficient character comparison without extra data structures
 
  @author Varun Misra
- @version 10.0
+ @version 9.0
  **/
 
 public class PalindromeChecker {
 
     // Recursive helper method
     private static boolean isPalindromeRecursive(String text, int start, int end) {
-        if (start >= end) return true;  // Base case
+        // Base condition: crossed indices or single character
+        if (start >= end) return true;
+
+        // Compare characters
         if (text.charAt(start) != text.charAt(end)) return false;
+
+        // Recursive call for next inner substring
         return isPalindromeRecursive(text, start + 1, end - 1);
     }
 
     // Public method for cleaner interface
     public static boolean isPalindrome(String text) {
-        // Normalize input: remove spaces, convert to lowercase
+        // Remove spaces and convert to lowercase
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
         return isPalindromeRecursive(cleaned, 0, cleaned.length() - 1);
     }
 
     public static void main(String[] args) {
 
-        String input = "A man a plan a canal Panama";
+        String input = "Madam";
 
         boolean result = isPalindrome(input);
 
