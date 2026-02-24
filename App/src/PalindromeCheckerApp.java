@@ -1,50 +1,50 @@
 /**
- MAIN CLASS - UseCase4PalindromeCheckerApp
+ MAIN CLASS - UseCase5PalindromeCheckerApp
 
- Use Case 4: Character Array Based Validation
+ Use Case 5: Stack Based Palindrome Checker
 
  Description:
- This class validates a palindrome by converting
- the string into a character array and comparing
- characters using the two-pointer technique.
+ This class validates a palindrome using a Stack
+ data structure which follows the LIFO principle.
 
  At this stage, the application:
- - Converts string to char array
- - Uses start and end pointers
- - Compares characters efficiently
+ - Pushes characters into a stack
+ - Pops them in reverse order
+ - Compares with original sequence
  - Displays the result
 
- This reduces extra memory usage.
+ This maps stack behavior to reversal Logic.
+
  @author Varun Misra
- @version 4.0
+ @version 5.0
  **/
 
-import java.util.*;
+import java.util.Stack;
+
 public class PalindromeChecker {
     public static boolean isPalindrome(String text) {
         // Remove spaces and convert to lowercase
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
 
-        // Convert to character array
-        char[] chars = cleaned.toCharArray();
+        Stack<Character> stack = new Stack<>();
 
-        // Two-pointer approach
-        int left = 0;
-        int right = chars.length - 1;
-
-        while (left < right) {
-            if (chars[left] != chars[right]) {
-                return false; // Mismatch found
-            }
-            left++;
-            right--;
+        // Push all characters onto the stack
+        for (int i = 0; i < cleaned.length(); i++) {
+            stack.push(cleaned.charAt(i));
         }
 
-        return true;
+        // Compare by popping characters
+        for (int i = 0; i < cleaned.length(); i++) {
+            if (cleaned.charAt(i) != stack.pop()) {
+                return false; // Mismatch found
+            }
+        }
+
+        return true; // All characters matched
     }
 
     public static void main(String[] args) {
-        // Hardcoded test string (can change to other test cases)
+        // Hardcoded test string
         String input = "Madam";
 
         boolean result = isPalindrome(input);
