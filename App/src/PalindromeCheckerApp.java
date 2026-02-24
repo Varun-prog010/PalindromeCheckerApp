@@ -1,23 +1,22 @@
 /**
- MAIN CLASS - UseCase3PalindromeCheckerUsingReverse
+ MAIN CLASS - UseCase4PalindromeCheckerApp
 
- Use Case 3: Reverse String Based Palindrome Check
+ Use Case 4: Character Array Based Validation
 
  Description:
- This class checks whether a string is a palindrome
- by reversing the string and comparing it with
- the original value.
+ This class validates a palindrome by converting
+ the string into a character array and comparing
+ characters using the two-pointer technique.
 
  At this stage, the application:
- Iterates the string in reverse order
- Builds a reversed version
- Compares original and reversed strings
- Displays the validation result
+ - Converts string to char array
+ - Uses start and end pointers
+ - Compares characters efficiently
+ - Displays the result
 
- This introduces transformation-based validation.
-
- @author Sourav Kumar
- @version 3.0
+ This reduces extra memory usage.
+ @author Varun Misra
+ @version 4.0
  **/
 
 import java.util.*;
@@ -26,19 +25,26 @@ public class PalindromeChecker {
         // Remove spaces and convert to lowercase
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
 
-        // Reverse the string using a loop
-        String reversed = "";
-        for (int i = cleaned.length() - 1; i >= 0; i--) {
-            reversed += cleaned.charAt(i); // Concatenate characters
+        // Convert to character array
+        char[] chars = cleaned.toCharArray();
+
+        // Two-pointer approach
+        int left = 0;
+        int right = chars.length - 1;
+
+        while (left < right) {
+            if (chars[left] != chars[right]) {
+                return false; // Mismatch found
+            }
+            left++;
+            right--;
         }
 
-        // Compare original cleaned string with reversed string
-        return cleaned.equals(reversed);
+        return true;
     }
 
     public static void main(String[] args) {
-
-        // Hardcoded test string (can be changed)
+        // Hardcoded test string (can change to other test cases)
         String input = "Madam";
 
         boolean result = isPalindrome(input);
